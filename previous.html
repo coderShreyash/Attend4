@@ -1,0 +1,121 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previous</title>
+     <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCCJX1wflEqUM2QEb5rT45ZSJdeG7Z7TWs",
+    authDomain: "attendance-2b61f.firebaseapp.com",
+    projectId: "attendance-2b61f",
+    storageBucket: "attendance-2b61f.appspot.com",
+    messagingSenderId: "881908872853",
+    appId: "1:881908872853:web:7b001064a12cf26e660d9c"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+</head>
+<body onload="doIt()">
+  <div id="formthere">
+        <label for="">Select Form: </label><select id="options">
+    </select>
+    <h1 id="title"></h1>
+    <div style="display: flex;align-items: baseline;margin-top: -20px;"><h2>Created On: </h2>
+      <h3 id="day"></h3></div>
+      <div style="display: flex;align-items: baseline;margin-top: -20px;"><h2>Duration: </h2>
+        <h2 id="duration"></h2></div>
+    <h2 style="margin-top: 0;">Form Link: </h2>
+    <input type="text" id="link" readonly>
+    <button type="button" id="copy" onclick="copytext()">Copy 📄</button>
+   
+        <h2>Share Using: </h2>
+        <a href="" target="blank" id="share"><img src="whatsapp.png" alt="" width="60" height="60">
+        </a>
+        <h4 style="margin-top:5px ;">WhatsApp</h4>
+      </div>
+      <div id="formnot" style="display: none;">
+        <center><h2>Please create a form to see it here!</h2></center>
+      </div>
+    
+    <script>
+        var database=firebase.database()
+        function getCookie(cname) {
+  let name = cname + "=";
+  let ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+function doIt(){
+        var forms = getCookie("Forms")
+        if(forms){
+        for(var i = forms;i>=1;i--){
+            form = getCookie(("Form"+(i).toString()))
+            document.getElementById("options").innerHTML+="<option value='"+form+"''>"+i+". "+form.slice(13)+"</option>"
+        }
+      }
+      else{
+        document.getElementById("formthere").style.display="none";
+        document.getElementById("formnot").style.display="block";
+
+        
+      }
+    }
+    function copytext(){
+        var copyText = document.getElementById("link");
+          copyText.select();
+          copyText.setSelectionRange(0,99999)
+          document.execCommand("copy");
+          document.getElementById("copy").innerHTML="Copied !"
+        }
+    setInterval(function(){
+        form=document.getElementById("options").value;
+        date=""
+        timo=""
+        database.ref(form+"/Date").on('value',function(data){
+            date = data.val().slice(0,24)
+        })
+        database.ref(form+"/Time").on('value',function(data){
+            timo = data.val()
+        })
+        
+       timo=parseInt(timo)
+       created = form.slice(0,13);
+       created = parseInt(created)
+
+       timel = timo-created
+       var timel = (parseInt(timo)-parseInt(created));
+var d = new Date(1000*Math.round(timel/1000));
+function pad(i) { return ('0'+i).slice(-2); }
+var str = pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds());
+
+        document.getElementById("day").innerHTML=date;
+        document.getElementById("duration").innerHTML=" "+str + " min";
+
+        document.getElementById("title").innerHTML=document.getElementById("options").value.slice(13);
+        
+        document.getElementById("link").value=(location.href.replace("previous.html","view.html?title="+document.getElementById("options").value.slice(13)+"&id="+document.getElementById("options").value.slice(0,13)))
+document.getElementById("share").setAttribute('href',"whatsapp://send?text=Attendance for "+document.getElementById("title").innerHTML+" : "+document.getElementById("link").value)
+
+    } ,500);
+    </script>
+</body>
+</html>

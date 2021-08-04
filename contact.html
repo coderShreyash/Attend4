@@ -1,0 +1,122 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact</title>
+</head>
+<style>
+    .center{
+        position: absolute;
+        left: 50%;
+        -webkit-transform: translateX(-50%);
+        transform: translateX(-50%, -50%);
+    }
+    #image{
+        margin-top: 10px;
+        width: 100px;
+        height: 60px;
+        border: 10px double black;
+    }
+    input,textarea{
+        border: 2px solid black;
+    }
+    input{
+        font-size:17px;
+    }
+    textarea{
+        font-size:15px;
+    }
+</style>
+ <!-- The core Firebase JS SDK is always required and must be listed first -->
+ <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+ 
+ <script>
+   
+   // Your web app's Firebase configuration
+   var firebaseConfig = {
+     apiKey: "AIzaSyCCJX1wflEqUM2QEb5rT45ZSJdeG7Z7TWs",
+     authDomain: "attendance-2b61f.firebaseapp.com",
+     projectId: "attendance-2b61f",
+     storageBucket: "attendance-2b61f.appspot.com",
+     messagingSenderId: "881908872853",
+     appId: "1:881908872853:web:7b001064a12cf26e660d9c"
+   };
+   // Initialize Firebase
+   firebase.initializeApp(firebaseConfig);
+ </script>
+<body>
+    <center><h1 style="background-color:#8600b3;color:white;padding:2.5;">Attendance Register</h1>
+        <div><button style="background-color:rgba(0, 162, 255,0);border:none;font-size: 150%;color: white;float: left;margin-right: -5px;" onclick="location.href=location.href.replaceAll('contact.html','index.html')">🔙</button>
+    <h2 style="margin-top:-15px;">Online Attendance App</h2></div>
+    
+        <h2>Wanna Contact Us?</h2></center>
+   
+
+<div class="center">
+<input placeholder="Enter A Reason" id="reason"><br>
+<textarea placeholder="Give us a brief description..." rows=10 cols=30 id="description">
+</textarea><br>
+<label for="files" class="btn">Select Related Image</label>
+  <div><input id="files" style="display:none;" type="file" onchange="encodeImageFileAsURL(this)">
+  <button style="background-color:rgb(0, 162, 255);font-size: 25px;color: white;float: right;" type="button" onclick="submits()"><b>Send</b></button>
+</div> <img src="" alt="See Your Image Here..." id="image">
+</div>
+
+
+<script>
+    var database = firebase.database()
+    var cns=0
+    database.ref("Contacts/Number").on('value',function(data){
+    cns=data.val()
+    })
+    function encodeImageFileAsURL(element) {
+    var file = element.files[0];
+    var reader = new FileReader();
+    reader.onloadend = function() {
+        document.getElementById("image").src=reader.result
+    }
+    reader.readAsDataURL(file);
+  }
+  function submits(){
+    reason=document.getElementById("reason").value
+      desc=document.getElementById("description").value
+      image=document.getElementById("image").src
+      errors=""
+      gotoit=""
+      if(reason.replaceAll(" ","").length<5){
+            errors = "Your Reason should at least have 5 characters !"
+      gotoit="reason"
+
+      }
+      else if(desc.replaceAll(" ","").length<10){
+        errors = "Your Description should at least have 10 characters !" 
+      gotoit="description"
+
+      }
+      if(errors===""){
+              database.ref("Contacts/Number").on('value',function(data){
+    cns=data.val()
+    })
+    cns++
+    database.ref("Contacts/").set({
+        Number:cns
+    })
+      var date = new Date() 
+      date = date.getTime() 
+    database.ref(date.toString()).set({
+Reason:reason,
+Description:desc,
+Image:image
+    })
+      
+}
+else{
+alert(errors)
+document.getElementById(gotoit).focus()
+}
+}
+</script>
+</body>
+</html>

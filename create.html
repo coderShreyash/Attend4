@@ -1,0 +1,226 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function setCookie(cname, cvalue, exdays) {
+const d = new Date();
+d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+let expires = "expires="+d.toUTCString();
+document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+let name = cname + "=";
+let ca = document.cookie.split(';');
+for(let i = 0; i < ca.length; i++) {
+ let c = ca[i];
+ while (c.charAt(0) == ' ') {
+   c = c.substring(1);
+ }
+ if (c.indexOf(name) == 0) {
+   return c.substring(name.length, c.length);
+ }
+}
+return "";
+}
+function stopEnterKey(evt) {
+        var evt = (evt) ? evt : ((event) ? event : null);
+        var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+        if ((evt.keyCode == 13) && (node.type == "text")) { return false; }
+    }
+    document.onkeypress = stopEnterKey;
+ </script>
+
+ <!-- The core Firebase JS SDK is always required and must be listed first -->
+ <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+ 
+ 
+ <!-- TODO: Add SDKs for Firebase products that you want to use
+      https://firebase.google.com/docs/web/setup#available-libraries -->
+ 
+ <script>
+   // Your web app's Firebase configuration
+   var firebaseConfig = {
+     apiKey: "AIzaSyCCJX1wflEqUM2QEb5rT45ZSJdeG7Z7TWs",
+     authDomain: "attendance-2b61f.firebaseapp.com",
+     projectId: "attendance-2b61f",
+     storageBucket: "attendance-2b61f.appspot.com",
+     messagingSenderId: "881908872853",
+     appId: "1:881908872853:web:7b001064a12cf26e660d9c"
+   };
+   // Initialize Firebase
+   firebase.initializeApp(firebaseConfig);
+ </script>
+ <style>
+     input{
+         border-bottom: 2px solid black;
+         border-top: none;
+         border-right: none;
+         border-left: none;
+font-size: 30px;
+     }
+ </style>
+</head>
+<body onload="document.getElementById('title').focus()">
+  <div id="loading" style="display: none;">
+    <img src="https://miro.medium.com/max/1600/1*CsJ05WEGfunYMLGfsT2sXA.gif" width="90%" height="50%">
+<h1 style="text-align: center;">Creating Form...</h1>
+  </div>
+  <div id="main">
+    <form>
+        <input type="text" id="title" name="title" placeholder="Enter Title " maxlength="25" style="width:95%" required
+        onkeyup="checkvd()" onkeydown="checkvd()">
+        <h2>Ask Name: </h2>
+        <input type="radio" name="name" value="on" required checked ><label>Yes</label>
+        <input type="radio" name="name" value="off" required disabled><label>No</label>
+
+        <h2>Ask Subject: </h2>
+        <input type="radio" name="sub" value="on" required checked><label>Yes</label>
+        <input type="radio" name="sub" value="off" required><label>No</label>
+
+        <h2>Ask Class: </h2>
+        <input type="radio" name="class" value="on" required checked><label>Yes</label>
+        <input type="radio" name="class" value="off" required><label>No</label>
+
+        <h2>Ask Section: </h2>
+        <input type="radio" name="sec" value="on" required checked><label>Yes</label>
+        <input type="radio" name="sec" value="off" required><label>No</label>
+
+        <h2>Ask Roll No. : </h2>
+        <input type="radio" name="roll" value="on" required checked><label>Yes</label>
+        <input type="radio" name="roll" value="off" required><label>No</label>
+
+        <h2>Take Picture: </h2>
+<label>Capture picture of student to see, if they are present. </label><br><br>
+
+        <input type="radio" name="pic" value="on" required checked><label>Yes</label>
+        <input type="radio" name="pic" value="off" required><label>No</label>
+
+        <h2>Duration: </h2>
+        <label>Till how much time can student fill the form (starting from the creation of form)</label><br><br>
+<select name="time" >
+  <option value=5>5 minutes</option>
+  <option value=10 selected>10 minutes</option>
+  <option value=15>15 minutes</option>
+  <option value=20>20 minutes</option>
+  <option value=25>25 minutes</option>
+  <option value=30>30 minutes</option>
+  <option value=40>40 minutes</option>
+
+</select>
+
+        <br><br>
+        <button style="background-color:rgb(153, 0, 255);font-size: 25px;color: white;" type="button" onclick="preview()"><b>Preview</b></button>
+        <button style="background-color:rgb(0, 162, 255);font-size: 25px;color: white;" type="button" onclick="submi()"><b>Submit</b></button>
+
+    </form>
+    </div>
+    <script>
+      var database = firebase.database();
+      var number = 0;
+      database.ref("Attendance/Number").on('value',function(data){
+          number=data.val()
+        })
+      function preview(){
+        event.preventDefault()
+        if(document.forms[0].checkValidity()===false){
+          alert("Please Fill Out The Form !");
+        }
+        else{
+          title = document.forms[0].title.value;
+          nam = document.forms[0].name.value;
+          clas = document.forms[0].class.value;
+          roll = document.forms[0].roll.value;
+          pic = document.forms[0].pic.value;
+          sec = document.forms[0].sec.value;
+          sub = document.forms[0].sub.value;
+
+          location.href=(location.href.replace("create.html","preview.html?"+"title="+title+"&name="+nam+"&class="+clas+"&roll="+roll+"&pic="+pic+"&sec="+sec+"&sub="+sub))
+        
+        }
+      }
+      function submi(){
+        var nok = false
+      event.preventDefault()
+      forms=getCookie("Forms")
+      for(var i = 1;i<=forms;i++){
+            form = getCookie(("Form"+i.toString()))
+            if(form.slice(13)===document.forms[0].title.value){
+            
+              nok = true
+            }
+        }
+      if(document.forms[0].checkValidity()===false){
+          alert("Please Fill Out The Form !");
+        }
+        else{
+          if(nok===false){
+        document.body.style.pointerEvents="none";
+        document.getElementById("main").style.display="none";
+        document.getElementById("loading").style.display="block";
+        var date=new Date();
+        var times=date.getTime();
+        var by = getCookie("teacher");
+        var title = document.forms[0].title.value;
+        var  nam = document.forms[0].name.value;
+        var  clas = document.forms[0].class.value;
+        var  roll = document.forms[0].roll.value;
+        var  pic = document.forms[0].pic.value;
+        var  sec = document.forms[0].sec.value;
+        var  sub = document.forms[0].sub.value;
+        var  tim = times+document.forms[0].time.value*1000*60;
+
+
+        database.ref("Attendance/Number").on('value',function(data){
+          number=data.val();
+        })
+        number++
+        database.ref("Attendance/").set({
+          Number:number
+        })
+        database.ref(times+title+"/").set({
+          Date:date.toString(0,24),
+          By:by,
+        Name:nam,
+        Class:clas,
+        Roll:roll,
+        Picture:pic,
+        Section:sec,
+        Subject:sub,
+        Time:tim
+        })
+        database.ref(times+title+"Responses/").set({
+          Responses:0
+        })
+        if(getCookie("Forms")===""){
+        setCookie("Forms",1,36500)
+        setCookie("Form1",times+title,36500)
+        }
+        else{
+          num = getCookie("Forms")
+          num++
+          setCookie("Forms",num,36500)
+          setCookie("Form"+num,times+title,36500);
+        }
+        setTimeout(function(){
+      location.href=(location.href.replace("create.html","created.html?"+"title="+title+"&id="+times))
+    },2500)
+  }
+  else{
+alert("Sorry, This Title Is Already in use, Please Use a Different one.\nSuggestion: This is to avoid confusion between attendance forms !")
+document.getElementById("title").focus();
+  }
+      }
+     
+    }
+   function checkvd(){
+    
+    document.getElementById('title').value=document.getElementById('title').value.replaceAll("'","").replaceAll("#","").replaceAll(";","").replaceAll(":","").replaceAll("~","").replaceAll("`","").replaceAll('"',"");
+   }
+    </script>
+</body>
+</html>

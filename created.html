@@ -1,0 +1,42 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Created</title>
+</head>
+<body>
+    <h2>Your Attendance Form is Created Successfully</h2>
+   
+<div style="display: flex;align-items: center;"> <h2 id="title"></h2>
+    <img width="50" src="tick.png" alt="OK">
+</div>
+    <h2>Form Link: </h2>
+<input type="text" id="link" readonly>
+<button type="button" id="copy" onclick="copytext()">Copy 📄</button>
+<h3>Share Using: </h3>
+<a href="" target="blank" id="share"><img src="whatsapp.png" alt="" width="60" height="60">
+</a>
+<h4>WhatsApp</h4>
+<script>
+    title=location.search.replace("?","").split("&")[0].slice(6).replaceAll('%20',' ')
+    time=location.search.replace("?","").split("&")[1].slice(3)
+document.getElementById("title").innerHTML=title;
+
+document.getElementById("link").value=(location.href.replace("created.html","view.html").replaceAll('%20',' '))
+setInterval(function(){
+document.getElementById("share").setAttribute('href',"whatsapp://send?text=Attendance for "+title+" : "+document.getElementById("link").value)
+},1000)
+
+function copytext(){
+var copyText = document.getElementById("link");
+  copyText.select();
+  copyText.setSelectionRange(0,99999)
+  document.execCommand("copy");
+  document.getElementById("copy").innerHTML="Copied !"
+}
+
+  
+</script>
+</body>
+</html>

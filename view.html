@@ -1,0 +1,443 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Form</title>
+      <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCCJX1wflEqUM2QEb5rT45ZSJdeG7Z7TWs",
+    authDomain: "attendance-2b61f.firebaseapp.com",
+    projectId: "attendance-2b61f",
+    storageBucket: "attendance-2b61f.appspot.com",
+    messagingSenderId: "881908872853",
+    appId: "1:881908872853:web:7b001064a12cf26e660d9c"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  function setCookie(cname, cvalue, exdays) {
+var d = new Date();
+d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+let expires = "expires="+d.toUTCString();
+document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+let name = cname + "=";
+let ca = document.cookie.split(';');
+for(let i = 0; i < ca.length; i++) {
+ let c = ca[i];
+ while (c.charAt(0) == ' ') {
+   c = c.substring(1);
+ }
+ if (c.indexOf(name) == 0) {
+   return c.substring(name.length, c.length);
+ }
+}
+return "";
+}
+</script>
+<style>
+  #popup {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width: 70%;
+}
+#pop {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width: 70%;
+  border: 3px solid black;
+  padding:10px;
+}
+.load{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+</style>
+</head>
+<body onload="
+document.getElementById('loading').style.display='block';
+if(getCookie('teacher').trim().length>0){
+  document.getElementById('main').style.display='none';
+  document.getElementById('popup').style.display='block';
+document.getElementById('loading').style.display='none';
+
+}
+else{
+  document.getElementById('main').style.display='none';
+  document.body.style='background:rgba(0,0,0,0.2);'
+
+
+setTimeout(function(){
+  document.body.style='background:rgba(255,255,255);'
+document.getElementById('loading').style.display='none';
+document.getElementById('main').style.display='block';
+},4000
+)}
+if(localStorage.getItem('formsubs')!==null){
+formds = localStorage.getItem('formsubs')
+for(var i=1;i<=formds;i++){
+curform = localStorage.getItem('formsub'+i)
+if(curform===location.search.split('&')[1].slice(3)){
+document.getElementById('main').innerHTML='<div id=pop><center><h2 style=margin-top: -5px;>You Have Already Filled the Form</h2><hr style=margin-top: -15px;><h3>This Form can be filled only once by a single Student. </h3></center></div>'
+}
+}
+}
+
+"
+>
+<div id="loading" class="load">
+  <img src="https://miro.medium.com/max/1600/1*CsJ05WEGfunYMLGfsT2sXA.gif" alt="loading..." width="200">
+  
+  <center>
+    <h2>Loading Form ...</h2>
+  </center>
+</div>
+
+<div id="submitting" class="load" style="display: none;">
+  <img src="https://miro.medium.com/max/1600/1*CsJ05WEGfunYMLGfsT2sXA.gif" width="250">
+  <center>
+    <h2>Submitting Form ...</h2>
+  </center>
+</div>
+
+    <div id="popup" style="display: none;border: 3px solid black;padding:10px;">
+        <center><h2 style="margin-top: -5px;">You Are Registered As Teacher</h2>
+          <hr style="margin-top: -15px;">
+        <h3>This Form is to be filled by non-teachers or Students. </h3>
+        <button style="background-color:rgb(153, 0, 255);font-size: 25px;color: white;"
+        onclick=" document.getElementById('main').style.display='block';
+        document.getElementById('popup').style.display='none';"><b>Fill Form Anyway</b></button>
+
+      </center>
+      </div>
+      <div id="main"> <center>
+        <h1 >Attendance For: </h1>
+  
+    <h1 id="title"></h1>
+    <label id="date"></label>
+    </center>
+
+    <div id="name" style="display: block;">
+  <h2>Enter Your Name: </h2>
+  <input type="text" id="Name" maxlength="25">
+</div>
+
+<div id="sub" style="display: none;">
+  <h2>Which Subject is Going On ? </h2>
+<select id="Sub">
+    <option></option>
+    <option>Mathematics</option>
+    <option>Science</option>
+    <option>Physics</option>
+    <option>Chemistry</option>
+    <option>Biology</option>
+    <option>Social Studies</option>
+    <option>History</option>
+    <option>Geography</option>
+    <option>Computer</option>
+    <option>Economics</option>
+</select>
+</div>
+
+<div id="class" style="display: none;">
+    <h2>Enter Your Class: </h2>
+    <input type="number" id="Class" onKeyPress="if(this.value.length==2) return false;">
+  </div>
+
+<div id="sec" style="display: none;">
+  <h2>Choose Your Section: </h2>
+  <select  id="Sec">
+    <option></option>
+    <option>A</option>
+    <option>B</option>
+    <option>C</option>
+    <option>D</option>
+    <option>E</option>
+    <option>F</option>
+    <option>G</option>
+
+  </select>
+</div>
+
+<div id="roll" style="display: none;">
+  <h2>Enter Your Roll No: </h2>
+  <input type="number" id="Roll" onKeyPress="if(this.value.length==4) return false;">
+</div>
+
+<div id="pic" style="display: none;">
+ 
+<h2>Take Your Picture: </h2>
+
+
+
+    <!-- -->
+    <div id="my_camera"></div>
+    <input type=button value="Take Picture" onClick="take_snapshot()">
+     
+    <div id="results" ></div>
+</div>
+<br>
+
+<button style="background-color:rgb(0, 162, 255);font-size: 25px;color: white;" type="button" onclick="submi()" id="submit"><b>Submit</b></button>
+
+</div>
+<script type="text/javascript" src="webcam.min.js"></script>
+    
+    <!-- Code to handle taking the snapshot and displaying it locally -->
+    <script>
+        
+        var database = firebase.database();
+        var title=location.search.split("&")[0].slice(7).replaceAll('%20',' ');
+        var clas="";
+        var roll="";
+        var pic="";
+        var sec="";
+        var sub="";
+        var id = location.search.split("&")[1].slice(3)+location.search.split("&")[0].slice(7).replaceAll('%20',' ')
+        var image=""
+        var date=""
+        var time;
+        var response = 0;
+
+    
+     // Configure a few settings and attach camera
+     Webcam.set({
+      width: 320,
+      height: 240,
+      image_format: 'jpeg',
+      jpeg_quality: 90
+     });
+     Webcam.attach( '#my_camera' );
+    
+     // preload shutter audio clip
+     var shutter = new Audio();
+     shutter.autoplay = true;
+     shutter.src = navigator.userAgent.match(/Firefox/) ? 'shutter.ogg' : 'shutter.mp3';
+    
+    function take_snapshot() {
+     // play sound effect
+     shutter.play();
+    
+     // take snapshot and get image data
+     Webcam.snap( function(data_uri) {
+     // display results in page
+     document.getElementById('results').innerHTML = 
+      '<img src="'+data_uri+'"/>';
+      image=data_uri;
+     } );
+    }
+
+
+        setInterval(function(){
+      
+          database.ref(id+"/Date").on('value',function(data){
+             date=data.val()
+            })
+            database.ref(id+"/Time").on('value',function(data){
+             time=data.val()
+            })
+            database.ref(id+"/Class").on('value',function(data){
+             clas=data.val()
+            })
+            database.ref(id+"/Roll").on('value',function(data){
+             roll=data.val()
+            })
+            database.ref(id+"/Picture").on('value',function(data){
+             pic=data.val()
+            })
+            database.ref(id+"/Section").on('value',function(data){
+             sec=data.val()
+            })
+            database.ref(id+"/Subject").on('value',function(data){
+             sub=data.val()
+            })
+
+
+            document.getElementById("title").innerHTML=title
+            a=new Date();
+            a=a.getTime();
+            var ms = (parseInt(time)-parseInt(a));
+var g = new Date(1000*Math.round(ms/1000));
+function pad(i) { return ('0'+i).slice(-2); }
+var str = pad(g.getUTCMinutes()) + ':' + pad(g.getUTCSeconds());
+if(clas==="on"){
+                document.getElementById("class").style.display="block"
+            }
+            else{
+              document.getElementById("class").style.display="none"
+              
+            }
+            if(roll==="on"){
+                document.getElementById("roll").style.display="block"
+            }
+            else{
+              document.getElementById("roll").style.display="none"
+
+            }
+            if(pic==="on"){
+                document.getElementById("pic").style.display="block"
+            }
+            else{
+              document.getElementById("pic").style.display="none"
+
+            }
+            if(sub==="on"){
+                document.getElementById("sub").style.display="block"
+            }
+            else{
+              document.getElementById("sub").style.display="none"
+            }
+            if(sec==="on"){
+                document.getElementById("sec").style.display="block"
+            }
+            else{
+              document.getElementById("sec").style.display="none"
+            }
+            database.ref(id+"Responses/Responses").on('value',function(data){
+    response = data.val();
+  })
+if(parseInt(ms)>=0){
+  document.getElementById("date").innerHTML="Time Left For Submitting Form: "+str;
+  document.getElementById("submit").style.display="block"
+  document.getElementById("name").style.display="block"
+
+
+}
+else{
+  document.getElementById("date").innerHTML="Time Left For Submitting Form is Finished"
+  document.getElementById("class").style.display="none"
+  document.getElementById("roll").style.display="none"
+  document.getElementById("name").style.display="none"
+  document.getElementById("pic").style.display="none"
+  document.getElementById("sec").style.display="none"
+  document.getElementById("sub").style.display="none"
+  document.getElementById("submit").style.display="none"
+} 
+
+    },500)
+
+    function submi(){
+      var valid = true
+      var errord = ""
+        var Name = ""
+        var Class = ""
+        var Section = ""
+        var Roll = ""
+        var Subject = ""
+      
+          if(document.getElementById("Name").value.trim().length===0){
+             valid = false
+             errord = "Write Name."
+          }
+          else{
+            Name = document.getElementById("Name").value
+          }
+                
+            
+            if(clas==="on"){
+              if(document.getElementById("Class").value.trim().length===0){
+             valid = false
+             errord = "Write Class."
+          }
+          else{
+            Class = document.getElementById("Class").value
+          }
+            }
+            if(roll==="on"){
+              if(document.getElementById("Roll").value.trim().length===0){
+             valid = false
+             errord = "Write Roll Number !"
+          }
+          else{
+            Roll = document.getElementById("Roll").value
+          }
+            }
+            if(pic==="on"){
+              if(image.trim().length===0){
+             valid = false
+             errord = "Take Your Picture (Allow Camera Access, if Blocked) !"
+
+          }
+            }
+            if(sub==="on"){
+              if(document.getElementById("Sub").value.trim().length===0){
+             valid = false
+             errord = "Choose Subject."
+          }
+          else{
+            Subject = document.getElementById("Sub").value
+          }
+            }
+            if(sec==="on"){
+              if(document.getElementById("Sec").value.trim().length===0){
+             valid = false
+             errord = "Choose Section."
+          }
+          else{
+            Section = document.getElementById("Sec").value
+          }
+            }
+if(valid===false){
+  alert("This Form Requires You To: "+errord)
+}
+else{
+  confirmed = confirm("Do You Really Want To Submit This Form ?\nNote: This form can be filled only once.")
+  if(confirmed){
+  document.getElementById("main").style.pointerEvents="none";
+  forms=localStorage.getItem("formsubs");
+  if(forms===null){
+    localStorage.setItem("formsubs",0);
+    forms=localStorage.getItem("formsubs");
+  }
+  forms++
+  localStorage.setItem("formsubs",forms);
+  localStorage.setItem("formsub"+forms,id.slice(0,13));
+
+  document.getElementById("main").style.display="none";
+  document.getElementById("submitting").style.display="block";
+
+  var dt = new Date()
+  database.ref(id+"Responses/Responses").on('value',function(data){
+    response = data.val();
+  })
+  response++
+  database.ref(id.slice(0,13).toString()+response.toString()).set({
+    Name:Name,
+    Class:Class,
+    Roll:Roll,
+    Subject:Subject,
+    Section:Section,
+    Date:dt,
+    Picture:image
+  })
+  database.ref(id+"Responses/").set({
+    Responses:response
+  })
+}
+setTimeout(function(){
+  location.reload();
+},4000)
+          }}
+        </script>
+</body>
+</html>

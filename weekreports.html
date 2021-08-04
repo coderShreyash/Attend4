@@ -1,0 +1,195 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previous</title>
+     <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCCJX1wflEqUM2QEb5rT45ZSJdeG7Z7TWs",
+    authDomain: "attendance-2b61f.firebaseapp.com",
+    projectId: "attendance-2b61f",
+    storageBucket: "attendance-2b61f.appspot.com",
+    messagingSenderId: "881908872853",
+    appId: "1:881908872853:web:7b001064a12cf26e660d9c"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+<style>
+    div{
+        width: max-content;
+        margin-bottom: 10px;
+    }
+</style>
+</head>
+<body onload="onload=doIt()">
+    <div>
+    <label for="">Forms This Week: </label><select id="options" onchange="document.getElementById('title').innerHTML=document.getElementById('options').value.slice(13)">
+    </select>
+</div>
+
+    <div>
+    <label >Select Class:</label>
+    <select id="class">
+        <option>All</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+        <option>6</option>
+        <option>7</option>
+        <option>8</option>
+        <option>9</option>
+        <option>10</option>
+        <option>11</option>
+        <option>12</option>
+
+    </select>
+    </div>
+    
+    <div>
+    <label >Select Section:</label>
+    <select id="section">
+        <option>All</option>
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+        <option>D</option>
+        <option>E</option>
+        <option>F</option>
+        <option>G</option>
+    </select>
+    </div>
+    <div >
+    <button onclick="inter()">See Respones</button><BR>
+    </div>
+    <label style="display: none;" id="big">Wait For <label id="wait"></label></label>
+    <h1 id="title"></h1>
+    <h3 id="Date"></h3>
+    <h2>Total Responses: </h2>
+    <h2 id = "Entries"></h2>
+    <details>
+        <summary>View Responses: </summary>
+        <div id="responses"></div>
+    </details>
+    <br>
+    <button style="background-color:rgb(0, 162, 255);font-size: 20px;color: white;" onclick="history.back()"> 🔙 Back</button>
+    
+    <script>
+        var database=firebase.database()
+        function getCookie(cname) {
+  let name = cname + "=";
+  let ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+function doIt(){
+    c = new Date()
+            c=c.getTime()
+            c=parseInt(c);
+        var forms = getCookie("Forms")
+        for(var i = forms;i>=1;i--){
+            form = getCookie(("Form"+(i).toString()))
+            
+            if(c-parseInt(form.slice(0,13))<=604800000){
+            document.getElementById("options").innerHTML+="<option value='"+form+"''>"+i+". "+form.slice(13)+"</option>"
+            }
+            document.getElementById("title").innerHTML=form.slice(13);
+        }
+        document.getElementById("title").innerHTML=form.slice(13);
+         
+    }
+    var responses = 0;
+    
+    setInterval(function(){
+        document.getElementById("title").innerHTML=document.getElementById("options").value.slice(13);
+        date = new Date(parseInt(document.getElementById("options").value.slice(0,13)));
+         date = date.toString();
+         document.getElementById("Date").innerHTML="Date: "+date.slice(0,24)
+    },700)
+
+function inter(){
+    interval = setInterval(function(){
+        document.getElementById("responses").innerHTML=""
+        database.ref(document.getElementById("options").value+"Responses/Responses").on('value',function(data){
+            document.getElementById("Entries").innerHTML=data.val()
+            responses=data.val();
+        })
+        for(var i = 1; i<=responses; i++){
+            showItd=true
+            showIte=true
+
+            database.ref((document.getElementById("options").value.slice(0,13))+i+"/Name").on('value',function(data){
+                document.getElementById("responses").innerHTML+="<details id="+i+"><summary>"+i+") "+data.val()+"</summary></details>";
+            })
+            database.ref((document.getElementById("options").value.slice(0,13))+i+"/Class").on('value',function(data){
+                if(parseInt(data.val())===parseInt(document.getElementById("class").value)||(document.getElementById("class").value==="All")){
+                document.getElementById(i).innerHTML+="Class: "+data.val();
+                showItd=true
+                }
+                else{
+                    showItd=false
+                }
+            })
+            database.ref((document.getElementById("options").value.slice(0,13))+i+"/Section").on('value',function(data){
+                if(data.val().toUpperCase()===document.getElementById("section").value||document.getElementById("section").value==="All"){
+                document.getElementById(i).innerHTML+="<BR>Section: "+data.val();
+                showIte=true
+                }
+                else{
+                    showIte=false
+                }
+            })
+            database.ref((document.getElementById("options").value.slice(0,13))+i+"/Roll").on('value',function(data){
+                document.getElementById(i).innerHTML+="<BR>Roll No.: "+data.val();
+            })
+            database.ref((document.getElementById("options").value.slice(0,13))+i+"/Subject").on('value',function(data){
+                document.getElementById(i).innerHTML+="<BR>Subject: "+data.val();
+            })
+            database.ref((document.getElementById("options").value.slice(0,13))+i+"/Picture").on('value',function(data){
+                document.getElementById(i).innerHTML+="<BR>Picture: "+"<img src="+data.val()+">";
+            })
+            if(showItd===false||showIte===false){
+                document.getElementById(i).style.display="none";
+            }
+            else{
+                document.getElementById(i).style.display="block";
+            }
+            
+        }
+    },500)
+    document.getElementById("big").style.display="block";
+    time = 10
+    oninterval=setInterval(function(){
+    time--
+    document.getElementById("wait").innerHTML=time+" seconds..."
+    },1000)
+    setTimeout(function(){
+    clearInterval(interval)
+    clearInterval(oninterval)
+    document.getElementById("big").style.display="none";
+    },10000)
+}
+    
+    </script>
+</body>
+</html>

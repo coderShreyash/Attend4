@@ -1,0 +1,140 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview</title>
+     
+</head>
+<body onload="check()">
+  
+    <label style="float:left">Preview</label><label style="float: right;" onclick="closePreview()">Close Preview ❌</label><br>
+
+
+    <center>
+        <h1 >Attendance For: </h1>
+  
+    <h1 id="title"></h1>
+    </center>
+
+<div id="name">
+  <h2>Enter Your Name: </h2>
+  <input type="text">
+</div>
+
+<div id="sub">
+  <h2>Which Subject is going on ? </h2>
+  <select id="subject">
+    <option>Mathematics</option>
+    <option>Science</option>
+    <option>Physics</option>
+    <option>Chemistry</option>
+    <option>Biology</option>
+    <option>Social Studies</option>
+    <option>History</option>
+    <option>Geography</option>
+    <option>Computer</option>
+    <option>Economics</option>
+</select>
+</div>
+
+<div id="class">
+    <h2>Your Class: </h2>
+    <input type="text">
+  </div>
+
+<div id="sec">
+  <h2>Your Section: </h2>
+  <input type="text" >
+</div>
+
+<div id="roll">
+  <h2>Your Roll No: </h2>
+  <input type="text">
+</div>
+
+<div id="pic" >
+ 
+<h2>Take Your Picture: </h2>
+
+
+
+    <!-- -->
+    <div id="my_camera"></div>
+    <input type=button value="Take Picture" onClick="take_snapshot()">
+     
+    <div id="results" ></div>
+</div>
+<br>
+<button disabled>Submit</button>
+
+<script type="text/javascript" src="webcam.min.js"></script>
+    
+    <!-- Code to handle taking the snapshot and displaying it locally -->
+    <script language="JavaScript">
+    
+     // Configure a few settings and attach camera
+     Webcam.set({
+      width: 320,
+      height: 240,
+      image_format: 'jpeg',
+      jpeg_quality: 90
+     });
+     Webcam.attach( '#my_camera' );
+    
+     // preload shutter audio clip
+     var shutter = new Audio();
+     shutter.autoplay = true;
+     shutter.src = navigator.userAgent.match(/Firefox/) ? 'shutter.ogg' : 'shutter.mp3';
+    
+    function take_snapshot() {
+     // play sound effect
+     shutter.play();
+    
+     // take snapshot and get image data
+     Webcam.snap( function(data_uri) {
+     // display results in page
+     document.getElementById('results').innerHTML = 
+      '<img src="'+data_uri+'"/>';
+     } );
+    }
+
+    </script>
+    <script>
+        function check(){
+            title=location.search.replace("?","").split("&")[0].slice(6);
+            nam=location.search.replace("?","").split("&")[1].slice(5);
+            clas=location.search.replace("?","").split("&")[2].slice(6);
+            roll=location.search.replace("?","").split("&")[3].slice(5);
+            pic=location.search.replace("?","").split("&")[4].slice(4);
+            sec=location.search.replace("?","").split("&")[5].slice(4);
+            sub=location.search.replace("?","").split("&")[6].slice(4);
+
+            document.getElementById("title").innerHTML=title
+            if(nam==="off"){
+                document.getElementById("name").style.display="none"
+            }
+            if(clas==="off"){
+                document.getElementById("class").style.display="none"
+            }
+            if(roll==="off"){
+                document.getElementById("roll").style.display="none"
+            }
+            if(pic==="off"){
+                document.getElementById("pic").style.display="none"
+            }
+            if(sub==="off"){
+                document.getElementById("sub").style.display="none"
+            }
+            if(sec==="off"){
+                document.getElementById("sec").style.display="none"
+            }
+        }
+        function closePreview(){
+          window.history.back()
+
+        }
+
+        </script>
+</body>
+</html>

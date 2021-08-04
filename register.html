@@ -1,0 +1,56 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+     #popup {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+</style>
+<script>
+   function setCookie(cname, cvalue, exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  let expires = "expires="+d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+</script>
+
+<body>
+    <div id="popup" style="border: 3px solid black;padding:10px;background-color: aliceblue;">
+        <center><h1 style="margin-top: -10px;">Register As Teacher</h1>
+          <hr style="margin-top: -15px;">
+        <form onsubmit="event.preventDefault()">
+        <h2>Enter Name: </h2>
+        <input type="text" id="name" required placeholder="Your Name" style="font-size:15;border: 2.5px solid black;" maxlength="15"><br><br>
+        <button type="button" style="background-color:#8600b3;color:white;padding:5;font-size:20;border:2.5px solid black" onclick="createTeacher()">Submit</button>
+        </form>
+      </center>
+    
+      </div>
+      <script>
+          function createTeacher(){
+      if(document.getElementById("name").value.trim().length===0){
+        alert("Please Enter Your Name !");
+        document.getElementById("name").value="";
+        document.getElementById("name").focus();
+
+      }
+      else{
+      localStorage.setItem("teacher",document.getElementById("name").value)
+      setCookie("teacher",document.getElementById("name").value,36500)
+      location.href=location.href.replace("register.html","index.html")
+    }
+    }
+      </script>
+</body>
+</html>
